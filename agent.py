@@ -19,6 +19,12 @@ our Python code actually runs it and returns the result.
 """
 import json
 import os
+import sys
+
+try:  # make the Windows console print em-dashes/emoji without crashing
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 
 from dotenv import load_dotenv
 
@@ -113,7 +119,7 @@ def main():
         return
     client = OpenAI(api_key=key,
                     base_url=os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1"))
-    model = os.getenv("LLM_MODEL", "llama-3.1-8b-instant")
+    model = os.getenv("LLM_MODEL", "openai/gpt-oss-20b")
 
     print("HR Agent ready (employees: E101 Aisha, E102 Rahul). Try, e.g.:")
     print("  How much casual leave does E101 have, and can it be carried forward?")

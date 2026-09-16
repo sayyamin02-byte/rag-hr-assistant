@@ -11,6 +11,12 @@ Ask things like:
     "How long is maternity leave and who is eligible?"
 Type 'exit' to quit.
 """
+import sys
+try:  # make the Windows console print em-dashes/emoji without crashing
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 from dotenv import load_dotenv
 
 from rag.ingest import build_chunks

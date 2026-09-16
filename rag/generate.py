@@ -53,7 +53,7 @@ def answer(question: str, contexts: list[tuple[Chunk, float]]) -> str:
     client = OpenAI(api_key=api_key,
                     base_url=os.getenv("LLM_BASE_URL", "https://api.groq.com/openai/v1"))
     resp = client.chat.completions.create(
-        model=os.getenv("LLM_MODEL", "llama-3.1-8b-instant"),
+        model=os.getenv("LLM_MODEL", "openai/gpt-oss-20b"),
         temperature=0,  # deterministic, factual — right for grounded Q&A
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},

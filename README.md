@@ -43,6 +43,28 @@ Only the final written answer (Step 3) calls an LLM — pluggable to **Groq (fre
 - "How long is maternity leave and who is eligible?"
 - "Can I encash sick leave?" ← tests grounded refusal (the handbook says no)
 
+## Upgrade — a real vector database (`rag/store_chroma.py`)
+`rag/store.py` hand-rolls the index with numpy so you can *see* the mechanic
+(embed → normalise → dot product == cosine). `rag/store_chroma.py` swaps that for
+**Chroma**, a real vector DB, while keeping the **exact same `.index()` / `.search()`
+interface** — so it's a genuine drop-in:
+
+| | `store.py` (numpy) | `store_chroma.py` (Chroma) |
+|---|---|---|
+| Where vectors live | in memory only | **persisted to disk** (`./.chroma/`) |
+| On restart | re-embeds everything | **loads from disk, no re-embed** |
+| Search | brute-force over all vectors | **HNSW** approximate-nearest-neighbour index |
+| Similarity | cosine (by hand) | cosine (`hnsw:space`) — same scores |
+
+```bash
+python -m rag.store_chroma      # see it embed once, then load from disk on re-run
+VECTOR_BACKEND=chroma python app.py   # run the whole chatbot on the real DB
+#   (Windows PowerShell:  $env:VECTOR_BACKEND="chroma"; python app.py)
+```
+The concept never changed — same embedding model, same cosine, same top-k. That's
+the point: retrieval quality is set by the *embeddings + chunking*, and the vector
+DB is just the scalable machinery that stores and searches them.
+
 ## Module 3 — Agent version (`agent.py`)
 Upgrades the chatbot into an **agent** with two tools it chooses between:
 `search_policy` (RAG) and `check_leave_balance` (a pretend HR API). The model
@@ -83,7 +105,8 @@ python eval.py
 ```
 
 ## What to build next (extensions for your portfolio)
-- Swap the numpy index for **Chroma** or **FAISS** (same idea, real vector DB).
-- Add **hybrid search** (BM25 keyword + vector) and a **re-ranker**.
-- Add **evaluation**: context relevance, faithfulness, answer relevance.
-- Turn it into an **agent** (Module 3): give it a `check_leave_balance` tool + RAG.
+- [x] Swap the numpy index for **Chroma** (`rag/store_chroma.py`) — real, persistent vector DB.
+- [ ] Add **hybrid search** (BM25 keyword + vector) and a **re-ranker**.
+- [ ] Add **guardrails**: PII masking + prompt-injection defense + output validation.
+- [x] Add **evaluation** (`eval.py`): context relevance, faithfulness, answer relevance.
+- [x] Turn it into an **agent** (`agent.py`) and a **multi-agent system** (`multi_agent.py`).

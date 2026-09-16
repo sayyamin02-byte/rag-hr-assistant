@@ -54,6 +54,20 @@ python agent.py   # needs a Groq key in .env (the agent uses the LLM to decide)
 ```
 Killer demo (uses BOTH tools): *"How much casual leave does E101 have, and can it be carried forward?"*
 
+## Module 4 — Multi-agent system (`multi_agent.py`)
+A **Router** reads each question and delegates to a specialist (Supervisor pattern):
+- **Router** → picks a lane: `policy` / `action` / `escalate`
+- **Policy agent** → answers rule questions from the handbook (RAG)
+- **Action agent** → runs a transaction (leave-balance lookup) via a tool
+- **Escalation agent** → writes a ticket for a human when it's out of scope
+
+```bash
+python multi_agent.py
+#  "How long is maternity leave?"          → router → policy
+#  "Casual leave balance for E101?"        → router → action
+#  "I want to resign, what's the process?" → router → escalate (writes a TICKET)
+```
+
 ## Module 5 — Evaluation (`eval.py`)
 Scores the system on the three standard RAG metrics against a small labelled test set:
 - **Context relevance** — did retrieval fetch the correct handbook section?

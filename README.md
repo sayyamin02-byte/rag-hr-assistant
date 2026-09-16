@@ -54,6 +54,20 @@ python agent.py   # needs a Groq key in .env (the agent uses the LLM to decide)
 ```
 Killer demo (uses BOTH tools): *"How much casual leave does E101 have, and can it be carried forward?"*
 
+## Module 5 — Evaluation (`eval.py`)
+Scores the system on the three standard RAG metrics against a small labelled test set:
+- **Context relevance** — did retrieval fetch the correct handbook section?
+- **Faithfulness** — is every claim grounded in the retrieved context (incl. correct refusals)?
+- **Answer relevance** — does the answer address the question?
+
+Faithfulness & relevance use an **LLM-as-judge**; a **trap** question (not in the handbook)
+checks the bot *refuses* instead of hallucinating.
+
+```bash
+python eval.py
+# Context relevance : 5/5 (100%)   Faithfulness : 6/6 (100%)   Answer relevance : 6/6 (100%)
+```
+
 ## What to build next (extensions for your portfolio)
 - Swap the numpy index for **Chroma** or **FAISS** (same idea, real vector DB).
 - Add **hybrid search** (BM25 keyword + vector) and a **re-ranker**.

@@ -43,6 +43,19 @@ Only the final written answer (Step 3) calls an LLM — pluggable to **Groq (fre
 - "How long is maternity leave and who is eligible?"
 - "Can I encash sick leave?" ← tests grounded refusal (the handbook says no)
 
+## Web UI (a clickable chat box in the browser)
+
+Prefer a real app over the terminal? There's a tiny [Streamlit](https://streamlit.io) UI:
+
+```bash
+pip install streamlit
+streamlit run web.py          # opens http://localhost:8501 in your browser
+```
+
+Same RAG pipeline as `app.py` — type a question, and it shows both the answer **and**
+the handbook snippets it retrieved (so you can see the "R" in RAG). The sidebar has
+sample questions to try.
+
 ## Upgrade — a real vector database (`rag/store_chroma.py`)
 `rag/store.py` hand-rolls the index with numpy so you can *see* the mechanic
 (embed → normalise → dot product == cosine). `rag/store_chroma.py` swaps that for

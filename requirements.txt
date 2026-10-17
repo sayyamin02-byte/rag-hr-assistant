@@ -3,3 +3,4 @@ numpy>=1.26
 python-dotenv>=1.0
 openai>=1.40
 chromadb>=1.0        # real vector database (Module: RAG upgrade)
+streamlit>=1.37        # web UI (web.py)
